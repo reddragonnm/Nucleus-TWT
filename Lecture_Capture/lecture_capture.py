@@ -1,6 +1,7 @@
 import sounddevice as sd
 import soundfile as sf
 import numpy as np
+import keyboard
 
 FRAMES = 44100
 
@@ -17,6 +18,8 @@ def record():
             sd.wait()
             recording = np.concatenate((recording, r))
             print(recording.shape)
+            if keyboard.is_pressed('q'):
+                break
     except KeyboardInterrupt:
         print('User Interrupt')
         return recording
@@ -27,6 +30,8 @@ def record():
 
 
 def main():
+
+
     recording = record()
 
     save("recording.wav", recording)
