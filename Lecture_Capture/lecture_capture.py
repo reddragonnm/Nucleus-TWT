@@ -2,7 +2,7 @@ import sounddevice as sd
 import soundfile as sf
 import numpy as np
 import keyboard
-from tkinter import filedialog
+from tkinter import filedialog, Tk
 
 FRAMES = 44100
 
@@ -11,18 +11,20 @@ FRAMES = 44100
 # in the python). Though this should be sufficient because it just opens the system's default file browser
 def get_path():
     """Creates dialog to save file"""
+    root = Tk()
+    root.withdraw()
     path = filedialog.asksaveasfilename(filetypes=(("WAV", "*.wav"), ("all files", "*.*")), defaultextension='.wav')
 
     return path
 
 
 def save(filename, file):
-    """Persists recording"""
+    """Persists recording in WAV format"""
     sf.write(filename, file, FRAMES)
 
 
 def record():
-    """Opens stream to record. In its current state press q to quit recording"""
+    """Opens stream to record from system's default microphone. In its current state press q to quit recording"""
     recording = np.empty([FRAMES, 2])
     try:
         while True:
@@ -32,6 +34,7 @@ def record():
             recording = np.concatenate((recording, r))
             print(recording.shape)
             if keyboard.is_pressed('q'):
+                sd.stop()
                 break
     except KeyboardInterrupt:
         print('User Interrupt')
