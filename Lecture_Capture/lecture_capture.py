@@ -2,15 +2,28 @@ import sounddevice as sd
 import soundfile as sf
 import numpy as np
 import keyboard
+from tkinter import filedialog
 
 FRAMES = 44100
 
+
+# Ideally we would want to use pygame to open a file browser, but this is an implementation in TK (which is included
+# in the python). Though this should be sufficient because it just opens the system's default file browser
+def get_path():
+    """Creates dialog to save file"""
+    path = filedialog.asksaveasfilename(filetypes=(("WAV", "*.wav"), ("all files", "*.*")), defaultextension='.wav')
+
+    return path
+
+
 def save(filename, file):
+    """Persists recording"""
     sf.write(filename, file, FRAMES)
 
 
 def record():
-    recording = np.empty([FRAMES,2])
+    """Opens stream to record. In its current state press q to quit recording"""
+    recording = np.empty([FRAMES, 2])
     try:
         while True:
             r = sd.rec(frames=FRAMES, samplerate=FRAMES, channels=2)
@@ -30,11 +43,8 @@ def record():
 
 
 def main():
-
-
     recording = record()
-
-    save("recording.wav", recording)
+    save(get_path(), recording)
 
 
 if __name__ == '__main__':
