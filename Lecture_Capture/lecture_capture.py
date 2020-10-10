@@ -22,31 +22,30 @@ def save(filename, file):
     """Persists recording in WAV format"""
     sf.write(filename, file, FRAMES)
 
-
+# Function is now set up to return one second chunks to add to np array. The idea is that in the gui it will be controlled by a button that toggles a boolean to determine if it will break out of the recording loop
 def record():
-    """Opens stream to record from system's default microphone. In its current state press q to quit recording"""
-    recording = np.empty([FRAMES, 2])
+    """Opens stream to record from system's default microphone. Records 1 second at a time"""
     try:
-        while True:
-            r = sd.rec(frames=FRAMES, samplerate=FRAMES, channels=2)
-            print(r.shape)
-            sd.wait()
-            recording = np.concatenate((recording, r))
-            print(recording.shape)
-            if keyboard.is_pressed('q'):
-                sd.stop()
-                break
+        r = sd.rec(frames=FRAMES, samplerate=FRAMES, channels=2)
+        sd.wait()
     except KeyboardInterrupt:
         print('User Interrupt')
-        return recording
+        return r
     except Exception as e:
         print(type(e).__name__ + ' -> ' + str(e))
 
-    return recording
+    return r
 
 
 def main():
-    recording = record()
+    recording = np.empty([FRAMES, 2])
+    while True:
+        recording= np.concatenate((recording, record()))
+        # Press q to stop the recording
+        if keyboard.is_pressed('q'):
+            sd.stop()
+            break
+
     save(get_path(), recording)
 
 
