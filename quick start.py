@@ -13,7 +13,7 @@
  manager = pygame_gui.UIManager((800, 600))
  
  first_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
-                                             text='Sup!',
+                                             text='Click me!',
                                              manager=manager)
 
  clock = pygame.time.Clock()
@@ -24,6 +24,11 @@
      for event in pygame.event.get():
          if event.type == pygame.QUIT:
              is_running = False
+        
+          if event.type == pygame.USEREVENT:
+             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                 if event.ui_element == first_btn:
+                     print('This button works!')
 
          manager.process_events(event)
 
