@@ -11,6 +11,10 @@
  background.fill(pygame.Color('#000000'))
 
  manager = pygame_gui.UIManager((800, 600))
+ 
+ first_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='Sup!',
+                                             manager=manager)
 
  clock = pygame.time.Clock()
  is_running = True
